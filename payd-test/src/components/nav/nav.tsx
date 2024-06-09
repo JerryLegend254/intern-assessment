@@ -1,6 +1,8 @@
 import { Search2Icon } from "@chakra-ui/icons";
 import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { useAuth } from "../../hooks/use-auth";
 export default function Nav({ openModal }: { openModal: () => void }) {
+  const { user } = useAuth();
   return (
     <nav className="flex flex-col md:flex-row justify-between py-6 items-center px-8">
       <h1 className="uppercase tracking-widest font-bold text-2xl">
@@ -22,7 +24,9 @@ export default function Nav({ openModal }: { openModal: () => void }) {
             New Post
           </Button>
           <div className="hidden  gap-6 items-center  md:flex justify-center">
-            <p className="text-slate-700 font-bold hidden xl:block">Jeremy Okuto</p>
+            <p className="text-slate-700 font-bold hidden xl:block">
+              {user?.name}
+            </p>
             <div className="h-12 w-12 rounded-full bg-gray-500"></div>
           </div>
         </ul>
