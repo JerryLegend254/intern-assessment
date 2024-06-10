@@ -17,3 +17,12 @@ export async function createPost(post: Post) {
     .then((response) => response.json())
     .then((data) => data);
 }
+
+export async function deletePost(id: number) {
+  return fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+    method: "DELETE",
+  })
+    .then((response) => response.json())
+    .then((data) => data);
+}
+

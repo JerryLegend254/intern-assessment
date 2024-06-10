@@ -1,8 +1,21 @@
-import { Button, Card, CardBody, CardFooter } from "@chakra-ui/react";
+import { Button, Card, CardBody, CardFooter, useToast } from "@chakra-ui/react";
 import { Post } from "../../types";
 import useUsers from "../../hooks/use-users";
-export default function PostCard({ post }: { post: Post }) {
+
+export default function PostCard({
+  post,
+  onDelete,
+}: {
+  post: Post;
+  onDelete: (id: number) => void;
+}) {
   const { users } = useUsers();
+  const toast = useToast();
+
+  const handleDelete = () => {
+    onDelete(post.id);
+  };
+
   return (
     <Card className="max-w-[420px] max-h-[300px] flex">
       <CardBody className="flex  flex-1 flex-col justify-between gap-2">
@@ -14,7 +27,9 @@ export default function PostCard({ post }: { post: Post }) {
       </CardBody>
       <CardFooter className="flex gap-4 justify-end">
         <Button colorScheme="green">Edit</Button>
-        <Button colorScheme="red">Delete</Button>
+        <Button colorScheme="red" onClick={handleDelete}>
+          Delete
+        </Button>
       </CardFooter>
     </Card>
   );
