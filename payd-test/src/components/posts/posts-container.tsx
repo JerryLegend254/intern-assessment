@@ -18,15 +18,17 @@ import {
   Spinner,
   useToast,
 } from "@chakra-ui/react";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import ReactPaginate from "react-paginate";
 export default function PostsContainer({
   isOpen,
   onClose,
+  search,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  search: string;
 }) {
   const {
     isLoading,
@@ -54,7 +56,14 @@ export default function PostsContainer({
   const { mutate } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
-      // Invalidate and refetch
+      onClose();
+      toast({
+        title: "Post created successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
@@ -69,13 +78,17 @@ export default function PostsContainer({
   useEffect(() => {
     setPagination((prevState) => ({
       ...prevState,
-      pageCount: prevState.data?.length / prevState.numberPerPage,
-      currentData: prevState.data.slice(
-        pagination.offset,
-        pagination.offset + pagination.numberPerPage,
-      ),
+      pageCount:
+        prevState.data?.filter((post: Post) => post.title.includes(search))
+          ?.length / prevState.numberPerPage,
+      currentData: prevState.data
+        ?.filter((post: Post) => post.title.includes(search))
+        ?.slice(
+          pagination.offset,
+          pagination.offset + pagination.numberPerPage,
+        ),
     }));
-  }, [pagination.numberPerPage, pagination.offset]);
+  }, [pagination.numberPerPage, pagination.offset, search]);
   const handlePageClick = (event: any) => {
     const selected = event.selected;
     const offset = selected * pagination.numberPerPage;
@@ -87,8 +100,9 @@ export default function PostsContainer({
       return toast({
         description: "Please fill all the fields",
         status: "error",
-        duration: 9000,
+        duration: 4000,
         isClosable: true,
+        position: "top",
       });
     mutate({ title, body, userId: user?.id || 1, id: Math.random() });
     setTitle("");
@@ -97,9 +111,9 @@ export default function PostsContainer({
   return (
     <section className="grid grid-cols-1 mx-auto lg:grid-cols-2 xl:grid-cols-3 mt-12 gap-4 px-10 md:px-40">
       {pagination.currentData &&
-        pagination.currentData.map((post: Post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
+        pagination.currentData
+          ?.filter((post: Post) => post.title.includes(search))
+          ?.map((post: Post) => <PostCard key={post.id} post={post} />)}
       <ReactPaginate
         previousLabel={"previous"}
         nextLabel={"next"}

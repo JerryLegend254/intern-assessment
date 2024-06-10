@@ -1,7 +1,16 @@
 import { Search2Icon } from "@chakra-ui/icons";
 import { Button, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { useAuth } from "../../hooks/use-auth";
-export default function Nav({ openModal }: { openModal: () => void }) {
+import { useState } from "react";
+export default function Nav({
+  openModal,
+  search,
+  setSearch,
+}: {
+  openModal: () => void;
+  search: string;
+  setSearch: (value: string) => void;
+}) {
   const { user } = useAuth();
   return (
     <nav className="flex flex-col md:flex-row justify-between py-6 items-center px-8">
@@ -17,6 +26,8 @@ export default function Nav({ openModal }: { openModal: () => void }) {
             type="tel"
             placeholder="Search posts..."
             focusBorderColor={"red"}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
         <ul className="gap-6 md:gap-12 items-center md:flex">
